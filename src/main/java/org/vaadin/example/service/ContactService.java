@@ -36,10 +36,7 @@ public class ContactService {
         if(keyword == null || keyword.isEmpty()){
             return all;
         }else{
-            return all.stream().filter(el-> {
-
-                return  el.getFirstName().toLowerCase().contains(keyword.toLowerCase()) || el.getLastName().toLowerCase().contains(keyword.toLowerCase());
-            }).collect(Collectors.toList());
+            return contactRepository.search(keyword);
         }
 
     }
