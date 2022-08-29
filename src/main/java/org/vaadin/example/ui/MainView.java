@@ -52,19 +52,42 @@ public class MainView extends VerticalLayout {
         addClassName("list-view");
         setSizeFull();
         contactForm = new ContactForm(companyService.findAll());
+        contactForm.addListener(ContactForm.SaveEvent.class, e->this.saveForm(e));
+        contactForm.addListener(ContactForm.DeleteEvent.class, e->{
+            System.out.println("Delete btn " + e.getContact());
+            contactService.delete(e.getContact());
+            updateList();
+        });
         //WRAP FORM IN DIV
         Div content = new Div(grid, contactForm);
         content.addClassName("content");
         content.setSizeFull();
         add(filterText, content);
         updateList();
+        closeForm();
     }
+
+    private void saveForm(ContactForm.SaveEvent evt) {
+        System.out.println(evt.getContact());
+        contactService.save(evt.getContact());
+        updateList();
+    }
+
+
+    public void closeForm(){
+        //to make it pop -> configureGrid method
+        contactForm.setContact(null);
+        contactForm.setVisible(false);
+        removeClassName("editing");
+    }
+
 
     private void configureFilter() {
         filterText.setPlaceholder("Filter by name");
         //the little x
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        //search field functionality
         filterText.addValueChangeListener(e->{
            updateList(filterText.getValue());
         });
@@ -98,6 +121,22 @@ public class MainView extends VerticalLayout {
         grid.setColumns("firstName", "lastName", "email", "status");
         //set length of each col
         grid.getColumns().forEach(col->col.setAutoWidth(true));
+        grid.asSingleSelect().addValueChangeListener(e->{
+            editContact(e.getValue());
+        });
+    }
+
+    private void editContact(Contact contact){
+        if(contact == null){
+            closeForm();
+        }else{
+            contactForm.setContact(contact);
+            contactForm.setVisible(true);
+//            contactForm.getStatusComboBox().setValue(contact.getStatus());
+//            contactForm.getCompanyComboBox().setValue(contact.getCompany());
+            addClassName("editing");
+
+        }
     }
 
 }
