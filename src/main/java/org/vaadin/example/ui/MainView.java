@@ -58,6 +58,7 @@ public class MainView extends VerticalLayout {
             contactService.delete(e.getContact());
             updateList();
         });
+        contactForm.addListener(ContactForm.CloseEvent.class, e-> closeForm());
         //WRAP FORM IN DIV
         Div content = new Div(grid, contactForm);
         content.addClassName("content");

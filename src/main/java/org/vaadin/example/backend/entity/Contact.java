@@ -57,8 +57,15 @@ public class Contact extends AbstractEntity implements Cloneable {
     public Company getCompany() {
         return company;
     }
+
     @Override
     public String toString() {
-        return firstName + " " + lastName;
+        return "Contact{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", company=" + company +
+                ", status=" + status +
+                ", email='" + email + '\'' +
+                "} " + super.toString();
     }
 }

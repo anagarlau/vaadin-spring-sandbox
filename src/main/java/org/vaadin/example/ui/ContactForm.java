@@ -33,11 +33,12 @@ public class ContactForm extends FormLayout {
     Button save = new Button("save");
     Button delete = new Button("delete");
     Button close = new Button("close");
-    Contact contact;
+    Contact contact = new Contact();
     Binder<Contact> binder = new BeanValidationBinder<>(Contact.class);
 
     //arg to fill the combobox for company names so as not to have extra dependencies with backend querie
     public ContactForm(List<Company> companies){
+        System.out.println("Bean before save" + contact.toString());
         //add fields to custom component
         addClassName("contact-form");
         binder.bindInstanceFields(this);
@@ -67,10 +68,12 @@ public class ContactForm extends FormLayout {
         //attaching custom event emitters
         save.addClickListener(click->{
             System.out.println("SAVE EVENT TRIGGERED");
-            System.out.println(binder.getBean());
+            System.out.println("get bean " + binder.getBean());
            //validate and save
             try {
+                //writes the attributes into a bean
                 binder.writeBean(contact);
+                //fires event caught in MainView by an inst
                 fireEvent(new SaveEvent(this, contact));
             } catch (ValidationException e) {
                 e.printStackTrace();
