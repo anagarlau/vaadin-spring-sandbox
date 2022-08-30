@@ -49,12 +49,13 @@ public class ContactService {
         contactRepository.delete(contact);
     }
 
-    public void save(Contact contact){
+    public Contact save(Contact contact){
         if(contact == null){
             logger.log(Level.SEVERE, "Contact is null. Is your form connected");
-            return;
+            return null;
         }
-        contactRepository.save(contact);
+        Contact save = contactRepository.save(contact);
+        return save;
     }
 
     @PostConstruct

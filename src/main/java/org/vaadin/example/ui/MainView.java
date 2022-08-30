@@ -1,8 +1,11 @@
 package org.vaadin.example.ui;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -48,7 +51,7 @@ public class MainView extends VerticalLayout {
         this.companyService = companyService;
         this.contactService=contactService;
         configureGrid();
-        configureFilter();
+        HorizontalLayout toolBar = getToolBar();
         addClassName("list-view");
         setSizeFull();
         contactForm = new ContactForm(companyService.findAll());
@@ -63,15 +66,23 @@ public class MainView extends VerticalLayout {
         Div content = new Div(grid, contactForm);
         content.addClassName("content");
         content.setSizeFull();
-        add(filterText, content);
+        add(toolBar, content);
         updateList();
         closeForm();
     }
 
     private void saveForm(ContactForm.SaveEvent evt) {
         System.out.println(evt.getContact());
-        contactService.save(evt.getContact());
-        updateList();
+        if(contactService.save(evt.getContact()) != null){
+            updateList();
+            contactForm.setContact(null);
+            closeForm();
+        }else{
+            Notification.show("Please Insert a valid contact");
+        }
+
+
+
     }
 
 
@@ -83,7 +94,8 @@ public class MainView extends VerticalLayout {
     }
 
 
-    private void configureFilter() {
+    private HorizontalLayout getToolBar() {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
         filterText.setPlaceholder("Filter by name");
         //the little x
         filterText.setClearButtonVisible(true);
@@ -92,6 +104,15 @@ public class MainView extends VerticalLayout {
         filterText.addValueChangeListener(e->{
            updateList(filterText.getValue());
         });
+        Button addContact = new Button("Add contact");
+        addContact.addClickListener(click->{
+           contactForm.setVisible(true);
+           contactForm.setContact(new Contact());
+
+        });
+        horizontalLayout.add(filterText, addContact);
+        horizontalLayout.addClassName("toolbar");
+        return horizontalLayout;
     }
 
     private void updateList() {
