@@ -1,4 +1,4 @@
-package org.vaadin.example.ui;
+package org.vaadin.example.ui.views.list;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -73,7 +73,7 @@ public class ContactForm extends FormLayout {
             try {
                 //writes the attributes into a bean
                 binder.writeBean(contact);
-                //fires event caught in MainView by an inst
+                //fires event caught in ListView by an inst
                 fireEvent(new SaveEvent(this, contact));
             } catch (ValidationException e) {
                 e.printStackTrace();
